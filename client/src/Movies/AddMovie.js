@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from "react";
 
 const initialState = {
   title: "",
@@ -9,43 +7,30 @@ const initialState = {
   stars: "",
 };
 
-const UpdateMovie = (props) => {
-  const [item, setItem] = useState(initialState);
+export default function AddMovie({ addMovie }) {
+  const [values, setValues] = useState(initialState);
 
   const handleChanges = (e) => {
-    setItem({
-      ...item,
+    setValues({
+      ...values,
       [e.target.name]: e.target.value,
     });
   };
 
-  const { id } = useParams();
-
-  const handleSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    props.updateMovie(id, item);
+    addMovie(values);
   };
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/movies/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        setItem({ ...res.data, stars: res.data.stars.join(", ") });
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   return (
     <div>
-      <h2>Update Movie</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <label htmlFor="title">Title:</label>
         <input
           type="text"
           name="title"
           onChange={handleChanges}
-          value={item.title}
+          value={values.title}
         />
         <div className="baseline" />
         <label htmlFor="director">Director:</label>
@@ -53,7 +38,7 @@ const UpdateMovie = (props) => {
           type="text"
           name="director"
           onChange={handleChanges}
-          value={item.director}
+          value={values.director}
         />
         <div className="baseline" />
         <label htmlFor="metascore">Metascore:</label>
@@ -61,7 +46,7 @@ const UpdateMovie = (props) => {
           type="number"
           name="metascore"
           onChange={handleChanges}
-          value={item.metascore}
+          value={values.metascore}
         />
         <div className="baseline" />
         <label htmlFor="stars">Stars:</label>
@@ -69,14 +54,10 @@ const UpdateMovie = (props) => {
           type="text"
           name="stars"
           onChange={handleChanges}
-          value={item.stars}
+          value={values.stars}
         />
-        <div className="baseline" />
-
-        <button className="md-button form-button">Update</button>
+        <button>Submit</button>
       </form>
     </div>
   );
-};
-
-export default UpdateMovie;
+}
